@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-page: #f3f6f9;
+  --bg-panel: #ffffff;
+  --bg-panel-soft: #f7fafc;
+  --line: #d8e2ea;
+  --text-main: #1d2b36;
+  --text-muted: #5f7281;
+  --accent: #0f9d8f;
+  --accent-soft: #d6f3ef;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(circle at 10% 10%, #e8f9f6 0%, transparent 25%),
+    radial-gradient(circle at 90% 20%, #e6f0ff 0%, transparent 28%), var(--bg-page);
+  color: var(--text-main);
+}
+
+#root {
+  min-height: 100vh;
+}
