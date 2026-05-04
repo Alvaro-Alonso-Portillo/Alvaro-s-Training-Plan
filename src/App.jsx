@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { DashboardView } from './features/dashboard/DashboardView'
 import { ProgressView } from './features/progress/ProgressView'
 import { TrainingPlanView } from './features/training-plan/TrainingPlanView'
@@ -8,18 +8,9 @@ import { buildMetrics } from './lib/metrics/trainingMetrics'
 const tabs = ['Dashboard', 'Training Plan', 'Progress']
 
 function App() {
-  const { plan, updateExercise, resetPlan, syncFromSheet, syncMeta, saveToSheet, pushMeta } =
-    useTrainingPlan()
+  const { plan, updateExercise, resetPlan, syncFromSheet, syncMeta, saveToSheet, pushMeta } = useTrainingPlan()
   const [activeTab, setActiveTab] = useState('Dashboard')
-  const [selectedWeekId, setSelectedWeekId] = useState(plan.weeks[0]?.id)
   const metrics = useMemo(() => buildMetrics(plan), [plan])
-
-  useEffect(() => {
-    const selectedExists = plan.weeks.some((week) => week.id === selectedWeekId)
-    if (!selectedExists && plan.weeks[0]) {
-      setSelectedWeekId(plan.weeks[0].id)
-    }
-  }, [plan.weeks, selectedWeekId])
 
   return (
     <main className="mx-auto w-full max-w-6xl p-2 pb-6 sm:p-4 md:p-6">
@@ -91,8 +82,6 @@ function App() {
         {activeTab === 'Training Plan' && (
           <TrainingPlanView
             plan={plan}
-            selectedWeekId={selectedWeekId}
-            onSelectWeek={setSelectedWeekId}
             onUpdateExercise={updateExercise}
           />
         )}

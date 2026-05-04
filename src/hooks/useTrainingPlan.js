@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import { localStorageProvider } from '../lib/storage/localStorage'
 import {
   pushPlanToGoogleSheets,
@@ -75,9 +75,18 @@ export function useTrainingPlan() {
     setPushMeta({ loading: false, message: result.message })
   }
 
+  const syncOnMount = useEffectEvent(() => {
+    void syncFromSheet()
+  })
+
   useEffect(() => {
-    syncFromSheet()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const timeoutId = window.setTimeout(() => {
+      syncOnMount()
+    }, 0)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
   }, [])
 
   return {

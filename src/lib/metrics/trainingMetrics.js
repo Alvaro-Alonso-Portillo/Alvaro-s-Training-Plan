@@ -11,7 +11,9 @@ const getAllExercises = (plan) =>
 export const buildMetrics = (plan) => {
   const allExercises = getAllExercises(plan)
   const currentWeek = plan.weeks[0]
-  const dayCompletions = currentWeek.days.filter((day) => day.exercises.every((exercise) => exercise.completed)).length
+  const dayCompletions = currentWeek
+    ? currentWeek.days.filter((day) => day.exercises.every((exercise) => exercise.completed)).length
+    : 0
 
   const totalExercises = allExercises.length
   const totalVolume = allExercises.reduce(

@@ -58,10 +58,12 @@ const parseWeekCsv = (weekNumber, csvText) => {
 
     if (!cellValue) return
 
-    if (/^Day\s+\d+:/i.test(cellValue)) {
+    const dayHeaderMatch = cellValue.match(/(?:^|\s)(Day|Dia|Día)\s+\d+:/i)
+    if (dayHeaderMatch) {
+      const dayHeader = cellValue.slice(dayHeaderMatch.index).trim()
       currentDay = {
         id: `w${weekNumber}-d${days.length + 1}`,
-        name: cellValue,
+        name: dayHeader,
         exercises: [],
       }
       days.push(currentDay)

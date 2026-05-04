@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 const toNumber = (value) => {
   const parsed = Number(String(value).replace(',', '.'))
@@ -30,19 +30,19 @@ const getActiveWeekId = (weeks) => {
   return weeks.at(-1)?.id
 }
 
-export function TrainingPlanView({ plan, selectedWeekId, onSelectWeek, onUpdateExercise }) {
+export function TrainingPlanView({ plan, onUpdateExercise }) {
   const activeWeekId = useMemo(() => getActiveWeekId(plan.weeks), [plan.weeks])
-  const week = plan.weeks.find((item) => item.id === selectedWeekId) || plan.weeks.find((item) => item.id === activeWeekId) || plan.weeks[0]
+  const [selectedWeekId, setSelectedWeekId] = useState(null)
   const [showWeekSelector, setShowWeekSelector] = useState(false)
-  const [selectedDayId, setSelectedDayId] = useState(week?.days[0]?.id)
+  const [selectedDayId, setSelectedDayId] = useState(null)
+  const week =
+    plan.weeks.find((item) => item.id === selectedWeekId) ||
+    plan.weeks.find((item) => item.id === activeWeekId) ||
+    plan.weeks[0]
 
-  useEffect(() => {
-    onSelectWeek(activeWeekId)
-  }, [activeWeekId, onSelectWeek])
-
-  useEffect(() => {
-    setSelectedDayId(week?.days[0]?.id)
-  }, [week?.id])
+  if (!week) {
+    return null
+  }
 
   const day = week.days.find((item) => item.id === selectedDayId) || week.days[0]
   const progress = getWeekProgress(week)
@@ -77,7 +77,7 @@ export function TrainingPlanView({ plan, selectedWeekId, onSelectWeek, onUpdateE
             <button
               key={item.id}
               type="button"
-              onClick={() => onSelectWeek(item.id)}
+              onClick={() => setSelectedWeekId(item.id)}
               className={`rounded-xl border px-3 py-2 text-sm ${
                 item.id === week.id
                   ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]'
