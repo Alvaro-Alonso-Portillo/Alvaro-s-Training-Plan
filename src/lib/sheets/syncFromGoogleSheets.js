@@ -1,5 +1,5 @@
 const SHEET_ID = '19Gz2ed9zG5NuKARDaxD2thhnYQbO1LHvsiUAwxj0omY'
-const MAX_WEEKS_TO_SCAN = 24
+const MAX_WEEKS_TO_SCAN = 12
 const SHEETS_PUSH_URL = import.meta.env.VITE_SHEETS_SYNC_URL
 
 const parseCsvLine = (line) => {
