@@ -30,6 +30,7 @@ const parseCsvLine = (line) => {
 }
 
 const clean = (value) => String(value || '').trim()
+const normalizeKey = (value) => clean(value).toLowerCase()
 
 const toExercise = (weekNumber, dayNumber, index, cells) => ({
   id: `w${weekNumber}-d${dayNumber}-e${index + 1}`,
@@ -70,8 +71,8 @@ const parseWeekCsv = (weekNumber, csvText) => {
     if (!currentDay) return
     if (/^Exercise$/i.test(cellValue)) return
 
-    const hasAnyWork = clean(cells[2]) || clean(cells[3]) || clean(cells[5]) || clean(cells[6])
-    if (!hasAnyWork) return
+    const hasExerciseName = clean(cells[1])
+    if (!hasExerciseName) return
 
     currentDay.exercises.push(toExercise(weekNumber, days.length, currentDay.exercises.length, cells))
   })
@@ -88,16 +89,35 @@ const parseWeekCsv = (weekNumber, csvText) => {
 const mergeWeekKeepingProgress = (existingWeek, incomingWeek) => {
   if (!existingWeek) return incomingWeek
 
+  const existingDaysByName = new Map(
+    existingWeek.days.map((day) => [normalizeKey(day.name), day]),
+  )
+
   return {
     ...incomingWeek,
-    days: incomingWeek.days.map((incomingDay, dayIndex) => {
-      const existingDay = existingWeek.days[dayIndex]
+    days: incomingWeek.days.map((incomingDay) => {
+      const existingDay =
+        existingDaysByName.get(normalizeKey(incomingDay.name)) ||
+        existingWeek.days.find((day) => day.id === incomingDay.id)
+
       if (!existingDay) return incomingDay
+
+      const existingExercisesByKey = new Map(
+        existingDay.exercises.map((exercise) => [
+          normalizeKey(exercise.exercise),
+          exercise,
+        ]),
+      )
 
       return {
         ...incomingDay,
-        exercises: incomingDay.exercises.map((incomingExercise, exerciseIndex) => {
-          const existingExercise = existingDay.exercises[exerciseIndex]
+        exercises: incomingDay.exercises.map((incomingExercise) => {
+          const existingExercise =
+            existingExercisesByKey.get(normalizeKey(incomingExercise.exercise)) ||
+            existingDay.exercises.find(
+              (exercise) => exercise.id === incomingExercise.id,
+            )
+
           if (!existingExercise) return incomingExercise
 
           return {
