@@ -58,12 +58,12 @@ export function TrainingPlanView({ plan, selectedWeekId, onSelectWeek, onUpdateE
           <button
             type="button"
             onClick={() => setShowWeekSelector((prev) => !prev)}
-            className="rounded-lg border border-[var(--line)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-muted)]"
+            className="rounded-lg border border-[var(--line)] bg-[#0f141a] px-3 py-1.5 text-xs font-medium text-[var(--text-muted)]"
           >
             {showWeekSelector ? 'Ocultar semanas' : 'Cambiar semana'}
           </button>
         </div>
-        <div className="mt-3 h-2 w-full rounded-full bg-white">
+        <div className="mt-3 h-2 w-full rounded-full bg-[#0f141a]">
           <div className="h-2 rounded-full bg-[var(--accent)]" style={{ width: `${progress.percent}%` }} />
         </div>
         <p className="mt-1 text-xs text-[var(--text-muted)]">
@@ -81,7 +81,7 @@ export function TrainingPlanView({ plan, selectedWeekId, onSelectWeek, onUpdateE
               className={`rounded-xl border px-3 py-2 text-sm ${
                 item.id === week.id
                   ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]'
-                  : 'border-[var(--line)] bg-white text-[var(--text-muted)]'
+                  : 'border-[var(--line)] bg-[#0f141a] text-[var(--text-muted)]'
               }`}
             >
               {item.name}
@@ -101,7 +101,7 @@ export function TrainingPlanView({ plan, selectedWeekId, onSelectWeek, onUpdateE
               className={`rounded-xl border px-3 py-2 text-left ${
                 item.id === day.id
                   ? 'border-[var(--accent)] bg-[var(--accent-soft)]'
-                  : 'border-[var(--line)] bg-white'
+                  : 'border-[var(--line)] bg-[#0f141a]'
               }`}
             >
               <p className="text-sm font-semibold text-[var(--text-main)]">Dia {index + 1}</p>
@@ -120,7 +120,7 @@ export function TrainingPlanView({ plan, selectedWeekId, onSelectWeek, onUpdateE
           {day.exercises.map((exercise) => (
             <article
               key={exercise.id}
-              className={`rounded-xl border p-3 ${exercise.completed ? 'border-[var(--accent)] bg-[var(--accent-soft)]/40' : 'border-[var(--line)] bg-white'}`}
+              className={`rounded-xl border p-3 ${exercise.completed ? 'border-[var(--accent)] bg-[var(--accent-soft)]/40' : 'border-[var(--line)] bg-[#0f141a]'}`}
             >
               <div className="mb-2 flex items-start justify-between gap-3">
                 <p className="text-base font-semibold text-[var(--text-main)]">{exercise.exercise}</p>
@@ -130,7 +130,7 @@ export function TrainingPlanView({ plan, selectedWeekId, onSelectWeek, onUpdateE
                   className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${
                     exercise.completed
                       ? 'bg-[var(--accent)] text-white'
-                      : 'border border-[var(--line)] bg-white text-[var(--text-muted)]'
+                      : 'border border-[var(--line)] bg-[#111a22] text-[var(--text-muted)]'
                   }`}
                 >
                   {exercise.completed ? 'Hecho' : 'Pendiente'}
@@ -150,7 +150,7 @@ export function TrainingPlanView({ plan, selectedWeekId, onSelectWeek, onUpdateE
                       onChange={(event) =>
                         onUpdateExercise(week.id, day.id, exercise.id, field, event.target.value)
                       }
-                      className="mt-1 w-full rounded-lg border border-[var(--line)] bg-white px-2 py-2 text-sm outline-none focus:border-[var(--accent)]"
+                      className="mt-1 w-full rounded-lg border border-[var(--line)] bg-[#121a22] px-2 py-2 text-sm outline-none focus:border-[var(--accent)]"
                     />
                   </label>
                 ))}
@@ -162,7 +162,7 @@ export function TrainingPlanView({ plan, selectedWeekId, onSelectWeek, onUpdateE
                       onUpdateExercise(week.id, day.id, exercise.id, 'weight', event.target.value)
                     }
                     inputMode="decimal"
-                    className="mt-1 w-full rounded-lg border border-[var(--line)] bg-white px-2 py-2 text-sm outline-none focus:border-[var(--accent)]"
+                    className="mt-1 w-full rounded-lg border border-[var(--line)] bg-[#121a22] px-2 py-2 text-sm outline-none focus:border-[var(--accent)]"
                   />
                 </label>
               </div>
@@ -200,7 +200,7 @@ export function TrainingPlanView({ plan, selectedWeekId, onSelectWeek, onUpdateE
                   onChange={(event) =>
                     onUpdateExercise(week.id, day.id, exercise.id, 'notes', event.target.value)
                   }
-                  className="mt-1 w-full rounded-lg border border-[var(--line)] bg-white px-2 py-2 text-sm outline-none focus:border-[var(--accent)]"
+                  className="mt-1 w-full rounded-lg border border-[var(--line)] bg-[#121a22] px-2 py-2 text-sm outline-none focus:border-[var(--accent)]"
                 />
               </label>
             </article>

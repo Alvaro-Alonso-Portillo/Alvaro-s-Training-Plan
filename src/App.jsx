@@ -22,11 +22,13 @@ function App() {
   }, [plan.weeks, selectedWeekId])
 
   return (
-    <main className="mx-auto w-full max-w-7xl p-2 pb-6 sm:p-4 md:p-6">
-      <section className="rounded-2xl border border-[var(--line)] bg-[var(--bg-panel)] p-3 shadow-soft sm:rounded-3xl sm:p-5 md:p-7">
+    <main className="mx-auto w-full max-w-6xl p-2 pb-6 sm:p-4 md:p-6">
+      <section className="grid-tech glow-border rounded-2xl border border-[var(--line)] bg-[var(--bg-panel)] p-3 shadow-soft sm:rounded-3xl sm:p-5 md:p-7">
         <header className="mb-4 flex flex-col justify-between gap-3 md:mb-6 md:flex-row md:items-end">
           <div>
-            <h1 className="font-display text-2xl font-semibold leading-tight sm:text-3xl md:text-4xl">Alvaro&apos;s Training Plan</h1>
+            <h1 className="font-display text-3xl font-semibold uppercase leading-tight tracking-wide sm:text-4xl md:text-5xl">
+              Alvaro&apos;s Training Plan
+            </h1>
             <p className="mt-1 text-xs text-[var(--text-muted)] sm:text-sm md:text-base">
               Seguimiento semanal, progreso y registro en tiempo real.
             </p>
@@ -36,14 +38,14 @@ function App() {
               type="button"
               onClick={syncFromSheet}
               disabled={syncMeta.loading}
-               className="rounded-xl bg-[var(--accent)] px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
+               className="rounded-xl bg-[var(--accent)] px-3 py-2 text-sm font-semibold text-[#0b1016] disabled:opacity-60"
             >
               {syncMeta.loading ? 'Sync...' : 'Sync Excel'}
             </button>
             <button
               type="button"
               onClick={resetPlan}
-              className="rounded-xl border border-[var(--line)] bg-[var(--bg-panel-soft)] px-3 py-2 text-sm font-medium hover:border-[var(--accent)] hover:text-[var(--accent)]"
+               className="rounded-xl border border-[var(--line)] bg-[var(--bg-panel-soft)] px-3 py-2 text-sm font-medium hover:border-[var(--accent)] hover:text-[var(--accent)]"
             >
               Reset data
             </button>
@@ -51,7 +53,7 @@ function App() {
               type="button"
               onClick={saveToSheet}
               disabled={pushMeta.loading}
-              className="rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-sm font-medium hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-60"
+               className="rounded-xl border border-[var(--line)] bg-[#0f141a] px-3 py-2 text-sm font-medium hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-60"
             >
               {pushMeta.loading ? 'Saving...' : 'Save Excel'}
             </button>
@@ -68,7 +70,7 @@ function App() {
           </p>
         ) : null}
 
-        <nav className="mb-5 grid grid-cols-3 gap-1 rounded-2xl bg-[var(--bg-panel-soft)] p-1.5 sm:gap-2 sm:p-2">
+        <nav className="mb-5 grid grid-cols-3 gap-1 rounded-2xl border border-[var(--line)] bg-[var(--bg-panel-soft)] p-1.5 sm:gap-2 sm:p-2">
           {tabs.map((tab) => (
             <button
               key={tab}
@@ -76,8 +78,8 @@ function App() {
               onClick={() => setActiveTab(tab)}
                className={`rounded-xl px-2 py-2 text-xs font-medium transition sm:px-4 sm:py-2.5 sm:text-sm ${
                 activeTab === tab
-                  ? 'bg-[var(--accent)] text-white'
-                  : 'text-[var(--text-muted)] hover:bg-white hover:text-[var(--text-main)]'
+                  ? 'bg-[var(--accent)] text-[#0b1016]'
+                  : 'text-[var(--text-muted)] hover:bg-[#0f141a] hover:text-[var(--text-main)]'
               }`}
             >
               {tab}
