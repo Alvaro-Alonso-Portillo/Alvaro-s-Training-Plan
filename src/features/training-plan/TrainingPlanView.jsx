@@ -1,9 +1,6 @@
 import { useMemo, useState } from 'react'
-
-const toNumber = (value) => {
-  const parsed = Number(String(value).replace(',', '.'))
-  return Number.isFinite(parsed) ? parsed : 0
-}
+import { ExerciseCompactRow } from './ExerciseCompactRow'
+import { ExerciseQuickEditor } from './ExerciseQuickEditor'
 
 const getWeekProgress = (week) => {
   const total = week.days.reduce((acc, day) => acc + day.exercises.length, 0)
@@ -35,6 +32,7 @@ export function TrainingPlanView({ plan, onUpdateExercise }) {
   const [selectedWeekId, setSelectedWeekId] = useState(null)
   const [showWeekSelector, setShowWeekSelector] = useState(false)
   const [selectedDayId, setSelectedDayId] = useState(null)
+  const [expandedExerciseId, setExpandedExerciseId] = useState(null)
   const week =
     plan.weeks.find((item) => item.id === selectedWeekId) ||
     plan.weeks.find((item) => item.id === activeWeekId) ||
@@ -46,6 +44,16 @@ export function TrainingPlanView({ plan, onUpdateExercise }) {
 
   const day = week.days.find((item) => item.id === selectedDayId) || week.days[0]
   const progress = getWeekProgress(week)
+
+  const updateExerciseField = (exerciseId, field, value) => {
+    onUpdateExercise(week.id, day.id, exerciseId, field, value)
+  }
+
+  const handleSaveAndNext = (exerciseId) => {
+    const exerciseIndex = day.exercises.findIndex((exercise) => exercise.id === exerciseId)
+    const nextExercise = day.exercises[exerciseIndex + 1]
+    setExpandedExerciseId(nextExercise?.id ?? null)
+  }
 
   return (
     <section className="space-y-4">
@@ -77,7 +85,10 @@ export function TrainingPlanView({ plan, onUpdateExercise }) {
             <button
               key={item.id}
               type="button"
-              onClick={() => setSelectedWeekId(item.id)}
+              onClick={() => {
+                setSelectedWeekId(item.id)
+                setExpandedExerciseId(null)
+              }}
               className={`rounded-xl border px-3 py-2 text-sm ${
                 item.id === week.id
                   ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]'
@@ -97,7 +108,10 @@ export function TrainingPlanView({ plan, onUpdateExercise }) {
             <button
               key={item.id}
               type="button"
-              onClick={() => setSelectedDayId(item.id)}
+              onClick={() => {
+                setSelectedDayId(item.id)
+                setExpandedExerciseId(null)
+              }}
               className={`rounded-xl border px-3 py-2 text-left ${
                 item.id === day.id
                   ? 'border-[var(--accent)] bg-[var(--accent-soft)]'
@@ -117,94 +131,46 @@ export function TrainingPlanView({ plan, onUpdateExercise }) {
         </h3>
 
         <div className="space-y-3 p-3">
-          {day.exercises.map((exercise) => (
-            <article
-              key={exercise.id}
-              className={`rounded-xl border p-3 ${exercise.completed ? 'border-[var(--accent)] bg-[var(--accent-soft)]/40' : 'border-[var(--line)] bg-[#0f141a]'}`}
-            >
-              <div className="mb-2 flex items-start justify-between gap-3">
-                <p className="text-base font-semibold text-[var(--text-main)]">{exercise.exercise}</p>
-                <button
-                  type="button"
-                  onClick={() => onUpdateExercise(week.id, day.id, exercise.id, 'completed', !exercise.completed)}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${
-                    exercise.completed
-                      ? 'bg-[var(--accent)] text-white'
-                      : 'border border-[var(--line)] bg-[#111a22] text-[var(--text-muted)]'
-                  }`}
-                >
-                  {exercise.completed ? 'Hecho' : 'Pendiente'}
-                </button>
-              </div>
+          {day.exercises.length === 0 ? (
+            <p className="rounded-xl border border-[var(--line)] bg-[#0f141a] px-3 py-4 text-sm text-[var(--text-muted)]">
+              No hay ejercicios configurados para este dia.
+            </p>
+          ) : null}
 
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  ['sets', 'Sets'],
-                  ['reps', 'Reps'],
-                  ['rest', 'Rest'],
-                ].map(([field, label]) => (
-                  <label key={field} className="text-xs text-[var(--text-muted)]">
-                    {label}
-                    <input
-                      value={exercise[field]}
-                      onChange={(event) =>
-                        onUpdateExercise(week.id, day.id, exercise.id, field, event.target.value)
-                      }
-                      className="mt-1 w-full rounded-lg border border-[var(--line)] bg-[#121a22] px-2 py-2 text-sm outline-none focus:border-[var(--accent)]"
-                    />
-                  </label>
-                ))}
-                <label className="text-xs text-[var(--text-muted)]">
-                  Weight (kg)
-                  <input
-                    value={exercise.weight}
-                    onChange={(event) =>
-                      onUpdateExercise(week.id, day.id, exercise.id, 'weight', event.target.value)
-                    }
-                    inputMode="decimal"
-                    className="mt-1 w-full rounded-lg border border-[var(--line)] bg-[#121a22] px-2 py-2 text-sm outline-none focus:border-[var(--accent)]"
-                  />
-                </label>
-              </div>
+          {day.exercises.map((exercise) => {
+            const isExpanded = expandedExerciseId === exercise.id
 
-              <div className="mt-2 flex gap-2">
-                {[2.5, 5].map((step) => (
-                  <button
-                    key={step}
-                    type="button"
-                    onClick={() => {
-                      const next = Math.max(0, toNumber(exercise.weight) + step)
-                      onUpdateExercise(week.id, day.id, exercise.id, 'weight', String(next))
-                    }}
-                    className="rounded-lg border border-[var(--line)] bg-[var(--bg-panel-soft)] px-3 py-1.5 text-xs font-medium text-[var(--text-main)]"
-                  >
-                    +{step}kg
-                  </button>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => {
-                    const next = Math.max(0, toNumber(exercise.weight) - 2.5)
-                    onUpdateExercise(week.id, day.id, exercise.id, 'weight', String(next))
-                  }}
-                  className="rounded-lg border border-[var(--line)] bg-[var(--bg-panel-soft)] px-3 py-1.5 text-xs font-medium text-[var(--text-main)]"
-                >
-                  -2.5kg
-                </button>
-              </div>
-
-              <label className="mt-2 block text-xs text-[var(--text-muted)]">
-                Notes
-                <input
-                  value={exercise.notes}
-                  onChange={(event) =>
-                    onUpdateExercise(week.id, day.id, exercise.id, 'notes', event.target.value)
+            return (
+              <div key={exercise.id} className="space-y-2">
+                <ExerciseCompactRow
+                  exercise={exercise}
+                  isExpanded={isExpanded}
+                  onToggle={() =>
+                    setExpandedExerciseId((current) =>
+                      current === exercise.id ? null : exercise.id,
+                    )
                   }
-                  className="mt-1 w-full rounded-lg border border-[var(--line)] bg-[#121a22] px-2 py-2 text-sm outline-none focus:border-[var(--accent)]"
                 />
-              </label>
-            </article>
-          ))}
+
+                {isExpanded ? (
+                  <ExerciseQuickEditor
+                    exercise={exercise}
+                    onUpdateField={(field, value) =>
+                      updateExerciseField(exercise.id, field, value)
+                    }
+                    onToggleCompleted={() =>
+                      updateExerciseField(
+                        exercise.id,
+                        'completed',
+                        !exercise.completed,
+                      )
+                    }
+                    onSaveAndNext={() => handleSaveAndNext(exercise.id)}
+                  />
+                ) : null}
+              </div>
+            )
+          })}
         </div>
       </article>
     </section>
